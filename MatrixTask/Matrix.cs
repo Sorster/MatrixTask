@@ -9,80 +9,113 @@ namespace MatrixTask
 {
     class Matrix
     {
+        static void Main(string[] args)
+        {
+            int rowSize = 0, coloumnSize = 0;
+          
+            InputMatrixSize(ref rowSize, ref coloumnSize);
+            int[,] matrix = new int[rowSize, coloumnSize];
+
+            InputMatrixElements(ref matrix, rowSize, coloumnSize);
+
+            //Main menu 
+            Menu(ref matrix, ref rowSize, ref coloumnSize);
+        }
+
+        //Set condition = 0 if users are not allowed to imput '0'
+        static int InputAndCheck(int number, int condition = 1)
+        {
+            if (condition == 0)
+            {
+                do
+                {
+                    //check the right input
+                    var check = (int.TryParse(Console.ReadLine(), out number));
+
+                    if (number == 0)
+                    {
+                        Console.WriteLine("Error! This number can't be 0!");
+                    }
+                    else if (!check)
+                    {
+                        Console.WriteLine("\nError! Pleasa input a number!");
+                    }
+                    else break;
+
+                } while (true);
+            }
+            if (condition == 1)
+            {
+                do
+                {
+                    //check the right input
+                    var check = (int.TryParse(Console.ReadLine(), out number));
+
+                    if (check)
+                    {
+                        break;
+                    }
+                    else if (!check)
+                    {
+                        Console.WriteLine("\nError! Pleasa input a number(integer)!");
+                    }
+
+                } while (true);
+            }
+          
+            return number;
+        }
+
         //The function input a matrix size
         static void InputMatrixSize(ref int rowSize, ref int coloumnSize)
         {
             Console.WriteLine("Input the size of rows: ");
-
-            do
-            {
-                //check the right input
-                var check = (int.TryParse(Console.ReadLine(), out rowSize));
-
-                if (rowSize == 0) 
-                { 
-                    Console.WriteLine("Error! Row size can't be 0!"); 
-                }
-                else if (!check) 
-                { 
-                    Console.WriteLine("\nError! Pleasa input a number!"); 
-                }
-                else break;
-
-
-            } while (true);
+            rowSize = InputAndCheck(rowSize, 0);
 
             Console.WriteLine("Input the size of coloumns: ");
-
-            do
-            {
-                //check the right input
-                var check = (int.TryParse(Console.ReadLine(), out coloumnSize));
-
-                if (coloumnSize == 0)
-                {
-                    Console.WriteLine("Error! Coloumn size can't be 0!");
-                }
-                else if (!check)
-                {
-                    Console.WriteLine("\nError! Pleasa input a number!");
-                }
-                else break;
-
-
-            } while (true);
+            coloumnSize = InputAndCheck(coloumnSize, 0);
         }
 
-        //The function input the matrix elemnts
+        //This method full the matrix
         static void InputMatrixElements(ref int[,] matrix, int rowSize, int coloumnSize)
         {
-            //Random rnd = new Random();
-            for (int i = 0; i < rowSize; i++)
-            {             
-                for (int j = 0; j < coloumnSize; j++)
+            Console.WriteLine("1.Manual input \n2.Automatic input ");
+            int condition = 0;
+
+            condition = InputAndCheck(condition);
+
+            if (condition == 1)
+            {
+                for (int i = 0; i < rowSize; i++)
                 {
-                    int temp;
-
-                    //temp = rnd.Next(-10,10);
-
-                    Console.WriteLine($"X:{i + 1} Y:{j + 1} ");
-
-                    do
+                    for (int j = 0; j < coloumnSize; j++)
                     {
-                        //check the right input
-                        var check = (int.TryParse(Console.ReadLine(), out temp));
-                        
-                        if (!check)
-                        {
-                            Console.WriteLine("\nError! Pleasa input a number!");
-                        }
-                        else break;
+                        Console.WriteLine($"X:{i + 1} Y:{j + 1} ");
 
-                    } while (true);
-
-                    matrix[i, j] = temp;
+                        matrix[i, j] = InputAndCheck(matrix[i, j], 1);
+                    }
                 }
             }
+
+            else if (condition == 2)
+            {
+                Random rnd = new Random();
+
+                for (int i = 0; i < rowSize; i++)
+                {
+                    for (int j = 0; j < coloumnSize; j++)
+                    {
+                        matrix[i, j] = rnd.Next(-10, 10);
+                    }
+                }
+            }
+
+            else
+            {
+                Console.WriteLine("Error! Please input 1 or 2!");
+            }
+
+            Console.Clear();
         }
 
         //The function output the matrix elements
@@ -104,24 +137,11 @@ namespace MatrixTask
         //The function count a number of positive or negative numbers 
         static void NumberOfPositiveNegative(int[,] matrix, int rowSize, int coloumnSize)
         {
-            int choice1;
-
+            int choice = 0;
             Console.WriteLine("1.Negative. \n2.Positive.");
-            
-            do
-            {
-                //check the right input
-                var check = (int.TryParse(Console.ReadLine(), out choice1));
-                
-                if (!check)
-                {
-                    Console.WriteLine("\nError! Please input a number!\nOperation :> ");
-                }
-                else break;
-
-            } while (true);
-
-            switch (choice1)
+            choice = InputAndCheck(choice, 0);
+         
+            switch (choice)
             {
                 //counter of negative numbers
                 case 1:
@@ -166,21 +186,12 @@ namespace MatrixTask
 
         //The function sort the matrix to lower or to upper element
         static void SortArray(int[,] matrix, int rowSize, int coloumnSize)
-        {
-          
+        {        
             Console.Write("1.To lower\n2.To upper\nCommand :> ");
-            int choice1;
-            
-            do
-            {
-                //check the right input
-                var check = (int.TryParse(Console.ReadLine(), out choice1));
-                if (!check) Console.WriteLine("\nError! Please input a number!\nOperation :> ");
-                else break;
+            int choice = 0;
+            choice = InputAndCheck(choice, 0);
 
-            } while (true);
-
-            switch (choice1)
+            switch (choice)
             {
                 //sort to lower
                 case 1:
@@ -203,6 +214,7 @@ namespace MatrixTask
 
                         break;
                     }
+
                 //sort to upper
                 case 2:
                     {
@@ -250,18 +262,10 @@ namespace MatrixTask
         static void MathOperations(int[,] matrix, int rowSize, int coloumnSize)
         {
             Console.Write("\n1.The sum of the matrix elemnts\n2.The composition of the matrix elemnts\nOperation :> ");
-            int choice1;
-            
-            do
-            {
-                //check the right input
-                var check = (int.TryParse(Console.ReadLine(), out choice1));
-                if (!check) Console.Write("\nError! Pleasa input a number!\nOperation :> ");
-                else break;
+            int choice = 0;
+            choice = InputAndCheck(choice, 0);
 
-            } while (true);
-
-            switch (choice1)
+            switch (choice)
             {
                 //calculating the sum of the elements
                 case 1:
@@ -280,6 +284,7 @@ namespace MatrixTask
 
                         break;
                     }
+
                 //calculating the composition of the elements
                 case 2:
                     {
@@ -297,6 +302,7 @@ namespace MatrixTask
 
                         break;
                     }
+
                 default:
                     {
                         Console.WriteLine("\nPlease retry your inut!");
@@ -310,39 +316,28 @@ namespace MatrixTask
         {
             do
             {
-                Console.Clear();
+                Console.Write("Menu: \n1.Input a matrix\n2.Sort the array\n3.Inversion of elemnts\n4.Mathematic operation\n5.A number of positive/negative numbers\n6.Show the matrix\n7.Close the program\nOperation :> ");
 
-                Console.Write("Menu: \n1.A number of positive/negative numbers\n2.Sort the array\n3.Inversion of elemnts\n4.Mathematic operation\n5.Reinput the matrix\n6.Show the matrix\n7.Close the program\nOperation :> ");
-
-                int choice1;
-                do
-                {
-                    //check the right input
-                    var check = (int.TryParse(Console.ReadLine(), out choice1));
-                   
-                    if (!check)
-                    {
-                        Console.WriteLine("\nError! Pleasa input a number!");
-                    }
-                    else break;
-
-                } while (true);
-
-                //the condition of closing a program
-                if (choice1 == 7) break;
+                int choice = 0;
+                choice = InputAndCheck(choice, 0);
 
                 Console.Clear();
 
-                switch (choice1)
+                //the program end condition
+                if (choice == 7) break;
+
+                switch (choice)
                 {
                     //Count a number of positive/negative numbers
                     case 1:
                         {
-                            ShowMatrix(matrix, rowSize, coloumnSize);
-                            NumberOfPositiveNegative(matrix, rowSize, coloumnSize);
+                            InputMatrixSize(ref rowSize, ref coloumnSize);
+                            matrix = new int[rowSize, coloumnSize];
+                            InputMatrixElements(ref matrix, rowSize, coloumnSize);
 
                             break;
                         }
+
                     //Sort the matrix
                     case 2:
                         {
@@ -352,6 +347,7 @@ namespace MatrixTask
 
                             break;
                         }
+
                     //Reverse the matrix
                     case 3:
                         {
@@ -361,6 +357,7 @@ namespace MatrixTask
 
                             break;
                         }
+
                     //Math operations of the matrix
                     case 4:
                         {
@@ -368,16 +365,16 @@ namespace MatrixTask
                
                             break;
                         }
+
                     //Reinput the matrix elements
                     case 5:
                         {
                             ShowMatrix(matrix, rowSize, coloumnSize);
-                            InputMatrixSize(ref rowSize, ref coloumnSize);
-                            InputMatrixElements(ref matrix, rowSize, coloumnSize);
-                            ShowMatrix(matrix, rowSize, coloumnSize);
+                            NumberOfPositiveNegative(matrix, rowSize, coloumnSize);
 
                             break;
                         }
+
                     //Shiw the matrix
                     case 6:
                         {
@@ -385,11 +382,7 @@ namespace MatrixTask
 
                             break;
                         }
-                    //Close the program
-                    case 7:
-                        {
-                            break;
-                        }
+
                     default:
                         {
                             Console.WriteLine("\nError! Please input a number from 1 to 5!");
@@ -397,30 +390,17 @@ namespace MatrixTask
                         }
                 }
 
-                Console.WriteLine("Press any ey to continue the program...");
-                Console.ReadKey();
+                ContinueAndClear();
 
             } while (true);
         }
 
-        static void Main(string[] args)
+        //This method pause the program until the user input any key. Then the method clear the console
+        static void ContinueAndClear()
         {
-            //variables of coloumns and rows size
-            int rowSize = 0, coloumnSize = 0;
-
-            //Input the matrix size
-            InputMatrixSize(ref rowSize, ref coloumnSize);
-
-            int[,] matrix = new int[rowSize, coloumnSize];
-
-            //Input the matrix elements
-            InputMatrixElements(ref matrix, rowSize, coloumnSize);
-
-            //The first matrix show
-            ShowMatrix(matrix,rowSize,coloumnSize);
-
-            //Choice the operation 
-            Menu(ref matrix, ref rowSize, ref coloumnSize);
+            Console.WriteLine("Press any key to continue the program...");
+            Console.ReadKey();
+            Console.Clear();
         }
     }
 }
